@@ -1,44 +1,36 @@
-﻿using Xunit;
-using task01;
+﻿using task01;
 
 namespace task01tests
 {
-    public class StringExtensionTests
+    public class StringExtensionsTests
     {
         [Fact]
-        public void test1()
+        public void IsPalindrome_ValidPalindrome_ReturnsTrue()
         {
-            Assert.True("А роза упала на лапу Азора".IsPalindrome());
+            string input = "А роза упала на лапу Азора";
+            Assert.True(input.IsPalindrome());
         }
 
         [Fact]
-        public void test2()
+        public void IsPalindrome_NotPalindrome_ReturnsFalse()
         {
-            Assert.False("hello".IsPalindrome());
+            string input = "Hello, world!";
+            Assert.False(input.IsPalindrome());
         }
 
         [Fact]
-        public void test3()
+        public void IsPalindrome_EmptyString_ReturnsFalse()
         {
-            Assert.True("казак".IsPalindrome());
+            string input = "";
+            Assert.False(input.IsPalindrome());
         }
 
         [Fact]
-        public void test4()
+        public void IsPalindrome_WithPunctuation_IgnoresPunctuation()
         {
-            Assert.True("12321".IsPalindrome());
+            string input = "Was it a car or a cat I saw?";
+            Assert.True(input.IsPalindrome());
         }
 
-        [Fact]
-        public void test5()
-        {
-            Assert.False("12345".IsPalindrome());
-        }
-
-        [Fact]
-        public void test6()
-        {
-            Assert.False("".IsPalindrome());
-        }
     }
 }
