@@ -1,58 +1,44 @@
 ﻿using System;
-using System.Threading;
+using System.Threading.Tasks;
 
-public class DefiniteIntegral
+namespace task14
 {
-    public static double Solve(double a, double b, Func<double, double> function, double step, int threadsnumber)
+    public static class DefiniteIntegral
     {
-        double sum = 0;
-
-        long totalSteps = (long)Math.Round((b - a) / step);
-
-        long part = totalSteps / threadsnumber;
-
-        Barrier barrier = new Barrier(threadsnumber + 1);
-
-        for (int i = 0; i < threadsnumber; i++)
+        public static double Solve(double a, double b, Func<double, double> f, double step, int threads)
         {
-            int index = i;
+            if (threads <= 0)
+                throw new ArgumentException("Количество потоков должно быть больше нуля.", nameof(threads));
 
-            new Thread(() =>
+            double totalWidth = b - a;
+            long totalSteps = (long)Math.Ceiling(totalWidth / step);
+            double actualStep = totalWidth / totalSteps;
+
+            double globalSum = 0.0;
+            object lockObject = new object();
+
+            Parallel.For(0, threads, t =>
             {
-                long start = index * part;
+                long stepsPerThread = totalSteps / threads;
+                long startStep = t * stepsPerThread;
+                long endStep = (t == threads - 1) ? totalSteps : startStep + stepsPerThread;
 
-                long end = index == threadsnumber - 1
-                    ? totalSteps
-                    : start + part;
-
-                double local = 0;
-
-                for (long j = start; j < end; j++)
+                double localSum = 0.0;
+                for (long i = startStep; i < endStep; i++)
                 {
-                    double x1 = a + j * step;
-                    double x2 = x1 + step;
-
-                    local += (function(x1) + function(x2)) * step / 2;
+                    double x = a + (i + 0.5) * actualStep;
+                    localSum += f(x);
                 }
 
-                double oldValue;
-                double newValue;
-
-                do
+                lock (lockObject)
                 {
-                    oldValue = sum;
-                    newValue = oldValue + local;
+                    globalSum += localSum;
                 }
-                while (Interlocked.CompareExchange(ref sum, newValue, oldValue) != oldValue);
+            });
 
-                barrier.SignalAndWait();
-            }).Start();
+            double result = globalSum * actualStep;
+            Console.WriteLine(result); // Тот самый вывод значения в консоль блокнота
+            return result;
         }
-
-        barrier.SignalAndWait();
-
-        Console.WriteLine(sum);
-
-        return sum;
     }
 }

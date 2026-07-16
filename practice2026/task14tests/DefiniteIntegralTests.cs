@@ -1,5 +1,6 @@
 ﻿using System;
 using Xunit;
+using task14;
 
 public class DefiniteIntegralTests
 {
