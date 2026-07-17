@@ -14,7 +14,6 @@ namespace task18tests
             var scheduler = new RoundRobinScheduler();
             var serverThread = new ServerThread(queue, scheduler);
 
-            // Передаем scheduler (аргумент 2) вместо serverThread
             scheduler.Add(new LongRunningCommand("C1", scheduler, 1, new List<string>()));
             scheduler.Add(new SoftStopCommand(serverThread, queue, scheduler));
             
@@ -29,7 +28,6 @@ namespace task18tests
             var serverThread = new ServerThread(queue, scheduler);
             var log = new List<string>();
 
-            // Передаем scheduler (аргумент 2)
             scheduler.Add(new LongRunningCommand("A", scheduler, 2, log));
             scheduler.Add(new LongRunningCommand("B", scheduler, 2, log));
 
