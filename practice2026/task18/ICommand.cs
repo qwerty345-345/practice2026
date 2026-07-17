@@ -1,7 +1,7 @@
-﻿namespace task18
+﻿namespace task18;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-        void Execute();
-    }
+    bool Execute(); 
+
 }

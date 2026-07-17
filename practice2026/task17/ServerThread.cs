@@ -1,90 +1,41 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
+﻿using System.Threading;
 
-namespace task17
+namespace task17;
+
+public class ServerThread
 {
-    public class ServerThread
+    private readonly IScheduler _scheduler;
+    private bool _isRunning;
+    private Thread? _thread;
+
+    public ServerThread(IScheduler scheduler)
     {
-        private readonly BlockingCollection<ICommand> queue;
-        private readonly Thread thread;
+        _scheduler = scheduler;
+    }
 
-        private volatile bool hardStopRequested;
-        private volatile bool softStopRequested;
+    public void Start()
+    {
+        _isRunning = true;
+        _thread = new Thread(Run);
+        _thread.Start();
+    }
 
-        public int ThreadId { get; private set; }
-
-        public ServerThread()
+    private void Run()
+    {
+        _scheduler.Start();
+        while (_isRunning)
         {
-            queue = new BlockingCollection<ICommand>();
-
-            thread = new Thread(Work);
-
-            thread.IsBackground = true;
-
-            thread.Start();
-            while (ThreadId == 0)
-            {
-                Thread.Yield();
-            }
+            Thread.Sleep(100);
         }
+        _scheduler.Stop();
+    }
 
-        private void Work()
+    public void Stop()
+    {
+        _isRunning = false;
+        if (_thread != null && _thread.IsAlive)
         {
-            ThreadId = Thread.CurrentThread.ManagedThreadId;
-
-            while (true)
-            {
-                if (!queue.TryTake(out ICommand command, Timeout.Infinite))
-                    continue;
-
-                try
-                {
-                    command.Execute();
-                }
-                catch
-                {
-                }
-
-                if (hardStopRequested)
-                {
-                    break;
-                }
-
-                if (softStopRequested && queue.Count == 0)
-                {
-                    break;
-                }
-            }
+            _thread.Join();
         }
-        public void AddCommand(ICommand command)
-        {
-            if (queue.IsAddingCompleted)
-                throw new InvalidOperationException("Сервер уже остановлен.");
-
-            queue.Add(command);
-        }
-
-        public void RequestHardStop()
-        {
-            if (Thread.CurrentThread.ManagedThreadId != ThreadId)
-                throw new InvalidOperationException();
-
-            hardStopRequested = true;
-        }
-
-        public void RequestSoftStop()
-        {
-            if (Thread.CurrentThread.ManagedThreadId != ThreadId)
-                throw new InvalidOperationException();
-
-            softStopRequested = true;
-        }
-        public void Wait()
-        {
-            thread.Join();
-        }
-
-        public bool IsAlive => thread.IsAlive;
     }
 }

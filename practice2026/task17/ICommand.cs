@@ -1,7 +1,13 @@
-﻿namespace task17
+﻿namespace task17;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-        void Execute();
-    }
+    bool Execute(); 
+}
+
+public interface IScheduler
+{
+    void AddCommand(ICommand command);
+    void Start();
+    void Stop();
 }
