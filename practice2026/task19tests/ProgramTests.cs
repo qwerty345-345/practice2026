@@ -28,4 +28,5 @@ public class ProgramTests
         string content = File.ReadAllText(resultFilePath);
         Assert.That(content, Does.Contain("Отчет о выполнении"));
         Assert.That(content, Does.Contain("Всего вызовов: 15"));
-gi}
+    }
+}
