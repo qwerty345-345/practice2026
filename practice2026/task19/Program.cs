@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using task17; // Используем планировщик и команды из task17
+using task17; 
 
 namespace task19;
 
@@ -16,7 +16,6 @@ public class Program
         var history = new List<int>();
         var lockObj = new object();
 
-        // Записываем порядок вызовов
         Action<int> logAction = (id) =>
         {
             lock (lockObj)
@@ -36,7 +35,6 @@ public class Program
         Console.WriteLine("Запуск планировщика в task19...");
         serverThread.Start();
 
-        // Ожидаем выполнения всех 15 шагов
         int expectedTotalCalls = numCommands * callsPerCommand;
         while (true)
         {
@@ -51,7 +49,6 @@ public class Program
         serverThread.Stop();
         Console.WriteLine("Выполнение завершено. Генерация отчета...");
 
-        // Определяем путь к папке task19
         string targetDir = AppDomain.CurrentDomain.BaseDirectory;
         DirectoryInfo? dir = new DirectoryInfo(targetDir);
         while (dir != null && !File.Exists(Path.Combine(dir.FullName, "practice2026.sln")))
@@ -64,7 +61,6 @@ public class Program
             targetDir = Path.Combine(dir.FullName, "task19");
         }
 
-        // Формируем текст отчета
         var sb = new StringBuilder();
         sb.AppendLine("Отчет о выполнении\n");
         sb.AppendLine("Порядок выполнения команд:");

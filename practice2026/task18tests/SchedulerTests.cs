@@ -26,11 +26,11 @@ public class SchedulerTests
     public void Scheduler_ShouldSupportDifferentCommands()
     {
         var queue = new BlockingCollection<ICommand>();
-        var scheduler = new RoundRobinScheduler(); // Исправлено: пустой конструктор!
+        var scheduler = new RoundRobinScheduler(); 
         var serverThread = new ServerThread(queue, scheduler);
 
         scheduler.Add(new LongRunningCommand(1, 100));
-        scheduler.Add(new SoftStopCommand(serverThread, queue, scheduler)); // Теперь передается без ошибок!
+        scheduler.Add(new SoftStopCommand(serverThread, queue, scheduler)); 
 
         Assert.That(scheduler.HasCommand(), Is.True);
     }

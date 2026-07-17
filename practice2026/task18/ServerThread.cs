@@ -32,7 +32,6 @@ namespace task18
                 }
                 else
                 {
-                    // Попытка взять команду, чтобы не висеть вечно
                     _queue.TryTake(out var queueCmd, 100);
                     cmd = queueCmd;
                 }
