@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Input;
 
 namespace task18
 {
@@ -12,9 +11,10 @@ namespace task18
             _serverThread = serverThread;
         }
 
-        public void Execute()
+        public bool Execute()
         {
             _serverThread.Stop();
+            return true;
         }
     }
 }

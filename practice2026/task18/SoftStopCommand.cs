@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 
 namespace task18
@@ -6,7 +7,7 @@ namespace task18
     {
         private readonly ServerThread _serverThread;
         private readonly BlockingCollection<ICommand> _queue;
-        private readonly IScheduler _scheduler;
+        private readonly IScheduler _scheduler; 
 
         public SoftStopCommand(ServerThread serverThread, BlockingCollection<ICommand> queue, IScheduler scheduler)
         {
@@ -15,16 +16,10 @@ namespace task18
             _scheduler = scheduler;
         }
 
-        public void Execute()
+        public bool Execute()
         {
-            if (_queue.Count == 0 && !_scheduler.HasCommand())
-            {
-                _serverThread.Stop();
-            }
-            else
-            {
-                _queue.Add(this);
-            }
+            _serverThread.Stop(); 
+            return true;
         }
     }
 }

@@ -1,33 +1,22 @@
 using System;
-using System.Collections.Generic;
 
 namespace task18
 {
     public class LongRunningCommand : ICommand
     {
-        private readonly IScheduler _scheduler;
-        private readonly int _totalSteps;
-        private int _currentStep = 0;
-        private readonly List<string> _log;
-        private readonly string _name;
+        private readonly int _id;
+        private readonly int _delayMs;
 
-        public LongRunningCommand(string name, IScheduler scheduler, int totalSteps, List<string> log)
+        public LongRunningCommand(int id, int delayMs)
         {
-            _name = name;
-            _scheduler = scheduler;
-            _totalSteps = totalSteps;
-            _log = log;
+            _id = id;
+            _delayMs = delayMs;
         }
 
-        public void Execute()
+        public bool Execute()
         {
-            _currentStep++;
-            _log.Add($"{_name}_Step{_currentStep}");
-
-            if (_currentStep < _totalSteps)
-            {
-                _scheduler.Add(this);
-            }
+            System.Threading.Thread.Sleep(_delayMs);
+            return true;
         }
     }
 }
